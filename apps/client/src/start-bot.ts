@@ -17,7 +17,12 @@ import {
 import { CustomClient } from './extensions/index.js';
 import { Bot } from './models/bot.js';
 import { Reaction } from './reactions/index.js';
-import { CommandRegistrationService, JobService, Logger } from './services/index.js';
+import {
+	CommandRegistrationService,
+	JobService,
+	Logger,
+	ProcessLifecycleService,
+} from './services/index.js';
 import { CommandTimingContext } from './services/command-timing-context.js';
 import { Job } from './services/job-service.js';
 import { Kobold, getDialectWithPool } from '@kobold/db';
@@ -142,10 +147,7 @@ async function start(): Promise<void> {
 	await bot.start();
 }
 
-process.on('unhandledRejection', (reason, _promise) => {
-	Logger.error('An unhandled promise rejection occurred.', reason);
-});
-
+ProcessLifecycleService.register(process.argv[2] === 'commands' ? 'command-registration' : 'shard');
 start().catch(error => {
 	Logger.error('An unspecified error occurred', error);
 });
