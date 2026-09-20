@@ -197,7 +197,8 @@ mv -T "${next_link}" "${app_root}/current"
 systemctl --user start pathwarden-backup.service 2>/dev/null || true
 systemctl --user disable --now pathwarden.service pathwarden-backup.timer
 
-if ! systemctl --user enable --now kobold.service; then
+systemctl --user enable kobold.service
+if ! systemctl --user restart kobold.service; then
 	systemctl --user disable --now kobold.service 2>/dev/null || true
 	systemctl --user enable --now pathwarden.service
 	exit 1
