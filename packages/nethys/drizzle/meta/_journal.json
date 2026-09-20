@@ -43,6 +43,13 @@
       "when": 1714934614216,
       "tag": "0005_whole_spitfire",
       "breakpoints": true
+    },
+    {
+      "idx": 6,
+      "version": "5",
+      "when": 1789940100000,
+      "tag": "0006_elastic_index_bigint",
+      "breakpoints": true
     }
   ]
 }

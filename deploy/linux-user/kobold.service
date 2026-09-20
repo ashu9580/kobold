@@ -1,0 +1,32 @@
+[Unit]
+Description=Kobold PF2e Discord bot
+Requires=kobold-postgres.service
+After=network-online.target kobold-postgres.service
+Wants=network-online.target
+
+[Service]
+Type=simple
+WorkingDirectory=%h/kobold/current
+EnvironmentFile=%h/.config/kobold/kobold.env
+Environment=NODE_ENV=production
+Environment=NODE_OPTIONS=--max-old-space-size=4096
+Environment=PATH=%h/.local/node/bin:/usr/local/bin:/usr/bin:/bin
+ExecStart=%h/.local/node/bin/node %h/kobold/current/dist/start-manager.js
+Restart=on-failure
+RestartSec=10s
+TimeoutStopSec=30s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadOnlyPaths=%h/kobold/current %h/.config/kobold
+ReadWritePaths=%h/kobold/data
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=default.target

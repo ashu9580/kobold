@@ -1,4 +1,13 @@
-import { integer, text, jsonb, serial, pgTableCreator, boolean, unique } from 'drizzle-orm/pg-core';
+import {
+	bigint,
+	integer,
+	text,
+	jsonb,
+	serial,
+	pgTableCreator,
+	boolean,
+	unique,
+} from 'drizzle-orm/pg-core';
 import { BestiaryEntry, CompendiumEntry } from '@kobold/schema';
 const pgTable = pgTableCreator(name => `nethys_${name}`);
 const standardFields = {
@@ -7,7 +16,7 @@ const standardFields = {
 	category: text('category').notNull(),
 	level: integer('level'),
 	gameSystem: text('game_system').notNull().default('pf2e'),
-	elasticIndex: integer('elastic_index').notNull(),
+	elasticIndex: bigint('elastic_index', { mode: 'number' }).notNull(),
 	elasticId: text('elastic_id').notNull(),
 	nethysId: text('nethys_id').notNull(),
 	search: text('search').notNull(),

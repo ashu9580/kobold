@@ -1,0 +1,27 @@
+[Unit]
+Description=Kobold PostgreSQL database
+After=network.target
+
+[Service]
+Type=simple
+Environment=PGDATA=%h/kobold/data/postgres
+ExecStart=%h/kobold-postgres-runtime/node_modules/@embedded-postgres/linux-arm64/native/bin/postgres -D %h/kobold/data/postgres -c listen_addresses=127.0.0.1 -c port=54321 -c unix_socket_directories=%h/kobold/data/postgres-socket
+KillSignal=SIGINT
+TimeoutStopSec=90s
+Restart=on-failure
+RestartSec=5s
+UMask=0077
+NoNewPrivileges=true
+PrivateTmp=true
+ProtectSystem=strict
+ProtectHome=read-only
+ReadOnlyPaths=%h/kobold-postgres-runtime
+ReadWritePaths=%h/kobold/data/postgres %h/kobold/data/postgres-socket
+ProtectKernelTunables=true
+ProtectControlGroups=true
+RestrictSUIDSGID=true
+LockPersonality=true
+RestrictAddressFamilies=AF_UNIX AF_INET AF_INET6
+
+[Install]
+WantedBy=default.target
