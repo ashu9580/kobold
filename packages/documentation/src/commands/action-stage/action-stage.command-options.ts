@@ -14,6 +14,7 @@ export enum ActionStageCommandOptionEnum {
 	effectConditionSheetValues = 'effect-condition-sheet-values',
 	effectConditionRollAdjustment = 'effect-condition-roll-adjustment',
 	effectConditionTargetTags = 'effect-condition-target-tags',
+	effectBlockIfActive = 'effect-block-if-active',
 	defendingStat = 'defending-stat',
 	editOption = 'edit-option',
 	editValue = 'edit-value',
@@ -143,6 +144,12 @@ export const actionStageCommandOptions = {
 		description: 'Tags for rolls this condition applies to. For example "skill or attack".',
 		required: false,
 		type: ApplicationCommandOptionType.String,
+	},
+	[ActionStageCommandOptionEnum.effectBlockIfActive]: {
+		name: 'block-if-active',
+		description: 'Block the action when the target already has this active condition.',
+		required: false,
+		type: ApplicationCommandOptionType.Boolean,
 	},
 	[ActionStageCommandOptionEnum.editOption]: {
 		name: 'edit-option',
@@ -354,6 +361,10 @@ export const actionStageOptionChoices = {
 		effectConditionTargetTags: {
 			name: 'effect-condition-roll-target-tags',
 			value: 'conditionRollTargetTags',
+		},
+		effectBlockIfActive: {
+			name: 'effect-block-if-active',
+			value: 'blockIfActive',
 		},
 	},
 	/** Choices for the move option */

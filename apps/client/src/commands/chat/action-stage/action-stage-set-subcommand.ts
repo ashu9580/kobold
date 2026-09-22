@@ -174,6 +174,7 @@ export class ActionStageSetSubCommand extends BaseCommandClass(
 					'effectConditionSheetValues',
 					'effectConditionRollAdjustment',
 					'effectConditionTargetTags',
+					'effectBlockIfActive',
 				];
 			} else {
 				return allChoices;
@@ -301,6 +302,7 @@ export class ActionStageSetSubCommand extends BaseCommandClass(
 					'conditionSheetValues',
 					'conditionRollAdjustment',
 					'conditionRollTargetTags',
+					'blockIfActive',
 				].includes(fieldToUpdate)
 			) {
 				invalid = true;
@@ -361,7 +363,9 @@ export class ActionStageSetSubCommand extends BaseCommandClass(
 		}
 
 		// boolean values
-		else if (['allowRollModifiers', 'healInsteadOfDamage'].includes(fieldToUpdate)) {
+		else if (
+			['allowRollModifiers', 'healInsteadOfDamage', 'blockIfActive'].includes(fieldToUpdate)
+		) {
 			finalValue = ['true', 'yes', '1', 'ok', 'okay'].includes(
 				newValue.toLocaleLowerCase().trim()
 			);
@@ -585,6 +589,8 @@ export class ActionStageSetSubCommand extends BaseCommandClass(
 						rollTargetTags: finalStringValue ?? null,
 					},
 				};
+			} else if (fieldToUpdate === 'blockIfActive') {
+				updatedRoll = { ...roll, blockIfActive: Boolean(finalValue) };
 			}
 		}
 

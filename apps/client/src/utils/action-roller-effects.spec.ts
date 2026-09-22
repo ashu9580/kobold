@@ -38,7 +38,11 @@ function creatureWithConditions(conditions: Condition[] = []) {
 	});
 }
 
-function action(trigger: ActionEffectTriggerEnum, effects: Condition[] = [condition()]): Action {
+function action(
+	trigger: ActionEffectTriggerEnum,
+	effects: Condition[] = [condition()],
+	blockIfActive = false
+): Action {
 	return {
 		id: 1,
 		userId: 'user',
@@ -63,6 +67,7 @@ function action(trigger: ActionEffectTriggerEnum, effects: Condition[] = [condit
 					name: `Effect ${index + 1}`,
 					type: RollTypeEnum.effect,
 					trigger,
+					blockIfActive,
 					condition: effect,
 					allowRollModifiers: false,
 				})
@@ -120,6 +125,56 @@ describe('ActionRoller condition effects', () => {
 		expect(target.conditions).toEqual([existingCondition]);
 		expect(actionRoller.shouldPersistConditionEffects()).toBe(false);
 		expect(actionRoller.buildEffectResultText()).toBe('Already active: frightened 2');
+	});
+
+	it('blocks a guarded action before rolling when the target has the active condition', () => {
+		const target = creatureWithConditions([condition()]);
+		const actionRoller = new ActionRoller(
+			null,
+			action(ActionEffectTriggerEnum.successOrBetter, [condition()], true),
+			creatureWithConditions(),
+			target
+		);
+
+		expect(() => actionRoller.buildRoll('', '', { targetDC: 10 })).toThrow(
+			/already has frightened/
+		);
+		expect(actionRoller.shouldPersistConditionEffects()).toBe(false);
+	});
+
+	it('requires a tracked target for a guarded action', () => {
+		const actionRoller = new ActionRoller(
+			null,
+			action(ActionEffectTriggerEnum.successOrBetter, [condition()], true),
+			creatureWithConditions(),
+			null
+		);
+
+		expect(() => actionRoller.buildRoll('', '', { targetDC: 10 })).toThrow(
+			/requires a tracked target/
+		);
+	});
+
+	it('reactivates an inactive guarded condition without duplicating it', () => {
+		const inactiveCondition = condition({ isActive: false, severity: 2 });
+		const target = creatureWithConditions([inactiveCondition]);
+		const actionRoller = new ActionRoller(
+			null,
+			action(ActionEffectTriggerEnum.successOrBetter, [condition()], true),
+			creatureWithConditions(),
+			target
+		);
+
+		actionRoller.buildRoll('', '', { targetDC: 10 });
+
+		expect(target.conditions).toHaveLength(1);
+		expect(target.conditions[0]).toMatchObject({
+			name: 'frightened',
+			isActive: true,
+			severity: 1,
+		});
+		expect(actionRoller.shouldPersistConditionEffects()).toBe(true);
+		expect(actionRoller.buildEffectResultText()).toBe('Applied: frightened 1');
 	});
 
 	it('does not stack duplicate effects from the same action roll', () => {

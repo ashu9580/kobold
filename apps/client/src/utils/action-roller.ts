@@ -166,6 +166,33 @@ export class ActionRoller {
 		return a.toLocaleLowerCase().trim() === b.toLocaleLowerCase().trim();
 	}
 
+	private assertEffectPreconditions() {
+		const guardedEffects = this.action.rolls.filter(
+			(roll): roll is EffectRoll => roll.type === 'effect' && roll.blockIfActive === true
+		);
+		if (!guardedEffects.length) return;
+
+		const conditionNames = guardedEffects.map(roll => roll.condition.name);
+		if (!this.targetCreature) {
+			throw new KoboldError(
+				`Yip! ${this.action.name} requires a tracked target so I can check for ${conditionNames.join(
+					', '
+				)}.`
+			);
+		}
+
+		const blockingCondition = this.targetCreature.conditions.find(
+			condition =>
+				condition.isActive !== false &&
+				conditionNames.some(name => this.conditionNamesMatch(condition.name, name))
+		);
+		if (blockingCondition) {
+			throw new KoboldError(
+				`Yip! ${this.targetCreature.name} already has ${blockingCondition.name}, so ${this.action.name} can't be used on them. Remove or deactivate the condition when it expires.`
+			);
+		}
+	}
+
 	private doesEffectTriggerMatch(
 		trigger: ActionEffectTriggerEnum,
 		lastTargetingResult: TargetingResult,
@@ -475,7 +502,7 @@ export class ActionRoller {
 		const existingCondition = this.targetCreature.conditions.find(condition =>
 			this.conditionNamesMatch(condition.name, roll.condition.name)
 		);
-		if (existingCondition) {
+		if (existingCondition && existingCondition.isActive !== false) {
 			this.conditionEffects.push({
 				condition: existingCondition,
 				status: 'already-active',
@@ -485,10 +512,14 @@ export class ActionRoller {
 
 		const condition = _.cloneDeep(roll.condition);
 		condition.isActive = true;
-		this.targetCreature.conditions.push(condition);
+		if (existingCondition) {
+			Object.assign(existingCondition, condition);
+		} else {
+			this.targetCreature.conditions.push(condition);
+		}
 		this.conditionEffectsChanged = true;
 		this.conditionEffects.push({
-			condition,
+			condition: existingCondition ?? condition,
 			status: 'applied',
 		});
 	}
@@ -669,6 +700,8 @@ export class ActionRoller {
 		rollDescription: string,
 		options: BuildRollOptions
 	): RollBuilder {
+		this.assertEffectPreconditions();
+
 		let title: string;
 		const overwriteTargetDc = options?.targetDC;
 

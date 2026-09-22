@@ -110,6 +110,7 @@ export const actionStageCommandDocumentation: CommandDocumentation<
 						[ActionStageCommandOptionEnum.effectConditionType]: 'status',
 						[ActionStageCommandOptionEnum.effectConditionSheetValues]:
 							'ac-[severity];fortitude-[severity];reflex-[severity];will-[severity]',
+						[ActionStageCommandOptionEnum.effectBlockIfActive]: false,
 					},
 				},
 			],

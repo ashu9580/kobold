@@ -47,6 +47,7 @@ describe('ActionStageAddEffectSubCommand', () => {
 				'condition-type': 'status',
 				'condition-severity': '1',
 				'condition-sheet-values': 'ac-[severity]',
+				'block-if-active': true,
 			},
 			userId: TEST_USER_ID,
 			guildId: TEST_GUILD_ID,
@@ -57,10 +58,11 @@ describe('ActionStageAddEffectSubCommand', () => {
 			{ id: action.id },
 			{
 				rolls: [
-					expect.objectContaining({
-						name: 'Frightened',
-						type: RollTypeEnum.effect,
-						trigger: ActionEffectTriggerEnum.successOrBetter,
+						expect.objectContaining({
+							name: 'Frightened',
+							type: RollTypeEnum.effect,
+							trigger: ActionEffectTriggerEnum.successOrBetter,
+							blockIfActive: true,
 						condition: expect.objectContaining({
 							name: 'frightened',
 							severity: 1,

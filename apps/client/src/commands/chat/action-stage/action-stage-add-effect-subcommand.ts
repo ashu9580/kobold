@@ -98,6 +98,10 @@ export class ActionStageAddEffectSubCommand extends BaseCommandClass(
 		const conditionSheetValues = intr.options.getString(
 			commandOptions[commandOptionsEnum.effectConditionSheetValues].name
 		);
+		const blockIfActive =
+			intr.options.getBoolean(
+				commandOptions[commandOptionsEnum.effectBlockIfActive].name
+			) ?? false;
 
 		if (!Object.values(ActionEffectTriggerEnum).includes(trigger)) {
 			throw new KoboldError(`Yip! ${trigger} is not a valid effect trigger.`);
@@ -194,6 +198,7 @@ export class ActionStageAddEffectSubCommand extends BaseCommandClass(
 			name: rollName,
 			type: RollTypeEnum.effect,
 			trigger,
+			blockIfActive,
 			condition,
 			allowRollModifiers: false,
 		};

@@ -77,6 +77,7 @@ export type EffectRoll = z.infer<typeof zEffectRoll>;
 export const zEffectRoll = zBaseRoll.extend({
 	type: z.literal(RollTypeEnum.effect),
 	trigger: z.enum(ActionEffectTriggerEnum).default(ActionEffectTriggerEnum.any),
+	blockIfActive: z.boolean().optional(),
 	condition: zEffectCondition,
 });
 export type Roll = z.infer<typeof zRoll>;

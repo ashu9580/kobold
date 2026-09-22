@@ -155,6 +155,9 @@ export class ActionDetailSubCommand extends BaseCommandClass(
 				if (roll.condition.note) {
 					description += `\nInitiative Note: ${roll.condition.note}`;
 				}
+				if (roll.blockIfActive) {
+					description += `\nPre-roll Guard: blocks if the condition is active`;
+				}
 				const field = { name: roll.name, value: description };
 				actionDetailEmbed.addFields([field]);
 			}

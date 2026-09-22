@@ -474,13 +474,15 @@ export const actionCreationWalkthroughs = {
 			'This requires her to make a medicine roll against a DC that she can choose medicine. She chooses this action to be for the trained DC (15). ' +
 			'She adds a stage to the action that will roll the medicine check for her. This is a "skill-challenge" action stage, because it\'s ' +
 			'rolling against her own value.\n\n' +
-			'`/action-stage add-skill-challenge action: Battle Medicine roll-name: Medicine Check dice-roll: d20+[medicine] target-ac-save-or-skill: 15`\n\n' +
+			'`/action-stage add-skill-challenge action:Battle Medicine (DC 15) roll-name:Medicine Check dice-roll:d20+[medicine] defending-stat:15`\n\n' +
 			'Now we use an advanced damage stage to represent the healing. We toggle the damage stage to heal instead of doing damage.\n\n' +
-			'`/action-stage add-advanced-damage action:Battle Medicine roll-name:Healing critical-success-dice-roll:4d8 success-dice-roll:2d8 heal-instead-of-damage:True`\n\n' +
+			'`/action-stage add-advanced-damage action:Battle Medicine (DC 15) roll-name:Healing critical-success-dice-roll:4d8 success-dice-roll:2d8 heal-instead-of-damage:true`\n\n' +
 			'However, on critically failing the roll, the target instead takes 1d8 damage! We use a new advanced damage stage to represent this.\n\n' +
-			'`/action-stage add-advanced-damage action:Battle Medicine roll-name:Critical Fail Damage! critical-failure-dice-roll:1d8`\n\n' +
-			'The action is ready! Anatase can roll the action using this command:\n\n' +
-			'`/roll action action:Battle Medicine`\n\n' +
+			'`/action-stage add-advanced-damage action:Battle Medicine (DC 15) roll-name:Critical Fail Damage critical-failure-dice-roll:1d8`\n\n' +
+			'Finally, she adds BM Immunity after any attempt and enables the pre-roll guard. The guard requires a tracked target and stops the action before rolling if BM Immunity is already active.\n\n' +
+			'`/action-stage add-effect action:Battle Medicine (DC 15) roll-name:BM Immunity trigger:any condition-name:BM Immunity condition-initiative-note:Immune to Battle Medicine block-if-active:true`\n\n' +
+			'The action is ready! Anatase can roll it against a tracked patient using this command:\n\n' +
+			'`/roll action action:Battle Medicine (DC 15) target-character:Ally Name`\n\n' +
 			"Once Anatase reaches expert in medicine, she'll make a second action with a DC of 20 and hp recovery of 2d8+10, etc. to choose between.",
 	},
 };

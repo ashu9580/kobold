@@ -257,6 +257,10 @@ export const actionStageCommandDefinition = {
 					],
 					11
 				),
+				[ActionStageCommandOptionEnum.effectBlockIfActive]: withOrder(
+					actionStageCommandOptions[ActionStageCommandOptionEnum.effectBlockIfActive],
+					12
+				),
 			},
 		},
 		[ActionStageSubCommandEnum.addSave]: {
